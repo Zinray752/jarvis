@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050b18">
+  <meta name="description" content="J.A.R.V.I.S. – your personal AI system">
+  <title>J.A.R.V.I.S. Mark II</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="orb" id="orb" aria-hidden="true"><span></span></div>
+    <div class="brand">
+      <div class="brand-name">J.A.R.V.I.S.</div>
+      <div class="brand-status" id="status">Starting…</div>
+    </div>
+    <button class="icon-btn" id="speakToggle" title="Read replies aloud" aria-pressed="false" aria-label="Read replies aloud">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section class="view" id="view-home" data-view="home">
+      <div class="agent-strip" id="agentStrip" role="radiogroup" aria-label="Who answers"></div>
+      <div class="project-pill" id="projectPill" hidden></div>
+      <div class="messages" id="messages" aria-live="polite"></div>
+      <div class="working" id="working" hidden><span class="dot"></span><span id="workingText">JARVIS is working…</span></div>
+      <form class="composer" id="composer" autocomplete="off">
+        <button type="button" class="mic" id="micBtn" aria-label="Speak">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2z"/></svg>
+        </button>
+        <textarea id="input" rows="1" placeholder="Message JARVIS…" aria-label="Message"></textarea>
+        <button type="submit" class="send" id="sendBtn" aria-label="Send">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.3 10l12.6 2-12.6 2z"/></svg>
+        </button>
+      </form>
+    </section>
+
+    <!-- AGENTS -->
+    <section class="view" id="view-agents" data-view="agents" hidden>
+      <h1>Agents</h1>
+      <p class="muted">Every agent talks through JARVIS. They are specialist personas sharing one brain. JARVIS picks one by reading your message, sends mixed requests to a team and combines the answers, or you pick yourself.</p>
+      <div id="agentCards" class="cards"></div>
+    </section>
+
+    <!-- MEMORY -->
+    <section class="view" id="view-memory" data-view="memory" hidden>
+      <h1>Memory</h1>
+      <p class="muted">Everything here stays on this phone. Say “remember that …” in chat, or add it below. Passwords and keys are refused.</p>
+      <form id="memoryForm" class="stack card">
+        <textarea id="memoryText" rows="2" placeholder="e.g. I prefer short answers"></textarea>
+        <div class="row">
+          <select id="memoryKind" aria-label="Type of memory">
+            <option value="fact">Fact</option>
+            <option value="preference">Preference</option>
+            <option value="goal">Goal</option>
+            <option value="decision">Decision</option>
+            <option value="instruction">Standing instruction</option>
+          </select>
+          <button class="btn primary" type="submit">Remember</button>
+        </div>
+      </form>
+      <input id="memorySearch" class="search" type="search" placeholder="Search memory…" aria-label="Search memory">
+      <div id="memoryList" class="list"></div>
+      <div class="card stack">
+        <h2>Short-term memory</h2>
+        <p class="muted" id="convInfo"></p>
+        <button class="btn" id="clearConv" type="button">Clear conversation</button>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="view" id="view-projects" data-view="projects" hidden>
+      <h1>Projects</h1>
+      <p class="muted">Each project keeps its own notes, decisions, tasks and history. Set one as current and JARVIS keeps it in mind while you chat.</p>
+      <form id="projectForm" class="stack card">
+        <input id="projectName" placeholder="Project name, e.g. Bike Boyz" aria-label="Project name">
+        <input id="projectDesc" placeholder="One line about it (optional)" aria-label="Project description">
+        <button class="btn primary" type="submit">Create project</button>
+      </form>
+      <div id="projectList" class="list"></div>
+      <div id="projectDetail"></div>
+    </section>
+
+    <!-- MORE -->
+    <section class="view" id="view-more" data-view="more" hidden>
+      <h1>More</h1>
+      <div class="cards">
+        <a class="card link-card" href="#research"><h2>Research</h2><p class="muted">Ask SIMONE to dig into a topic.</p></a>
+        <a class="card link-card" href="#automations"><h2>Automations</h2><p class="muted">Approved actions and routines.</p></a>
+        <a class="card link-card" href="#settings"><h2>Settings</h2><p class="muted">Brain, voice, privacy and backups.</p></a>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section class="view" id="view-research" data-view="research" hidden>
+      <h1>Research</h1>
+      <p class="muted">SIMONE looks your question up on Wikipedia, answers with numbered sources and links, and tells you what to check on official sites (Wikipedia has no live prices or deadlines).</p>
+      <form id="researchForm" class="stack card">
+        <textarea id="researchQ" rows="3" placeholder="What should SIMONE research?"></textarea>
+        <button class="btn primary" type="submit">Ask SIMONE</button>
+      </form>
+    </section>
+
+    <!-- AUTOMATIONS -->
+    <section class="view" id="view-automations" data-view="automations" hidden>
+      <h1>Automations</h1>
+      <div class="card stack">
+        <h2>Nothing runs on its own yet</h2>
+        <p class="muted">JARVIS separates three levels: <b>reading</b> (looking things up), <b>preparing</b> (drafting an email, a plan, code) and <b>executing</b> (sending, publishing, deleting, paying). Executing will always wait for your tap on Approve.</p>
+        <p class="muted">Scheduled routines and approved actions are not built yet: they need a free backend to run them while the app is closed.</p>
+      </div>
+      <div class="card stack">
+        <h2>Approval log</h2>
+        <p class="muted" id="approvalLog">No actions have been requested.</p>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings" data-view="settings" hidden>
+      <h1>Settings</h1>
+
+      <div class="card stack">
+        <h2>You</h2>
+        <label>What should JARVIS call you?<input id="setName" placeholder="Your name"></label>
+      </div>
+
+      <div class="card stack">
+        <h2>Brain</h2>
+        <label>AI provider<select id="setProvider"></select></label>
+        <p class="muted small" id="providerNote"></p>
+        <label id="customUrlRow" hidden>Server address (chat completions URL)<input id="setCustomUrl" placeholder="http://192.168.0.10:11434/v1/chat/completions"></label>
+        <label id="keyRow">API key <span class="muted small">(stored only on this phone, never sent anywhere except the AI provider)</span>
+          <input id="setKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key">
+        </label>
+        <p class="small" id="keyStatus" role="status"></p>
+        <div class="row" id="keyActions">
+          <button class="btn primary" type="button" id="saveKey">Save key</button>
+          <button class="btn" type="button" id="showKey">Show</button>
+          <button class="btn danger" type="button" id="removeKey">Remove key</button>
+        </div>
+        <a id="keyLink" class="small" target="_blank" rel="noopener" hidden>Get a free key</a>
+        <label>Model<input id="setModel" list="modelList" placeholder="model name"></label>
+        <datalist id="modelList"></datalist>
+        <div class="row">
+          <button class="btn" type="button" id="loadModels">Load models</button>
+          <button class="btn primary" type="button" id="testBrain">Test connection</button>
+        </div>
+        <p class="small" id="brainResult" role="status"></p>
+        <label class="check"><input type="checkbox" id="setWeb"> Live research: SIMONE checks Wikipedia and shows real sources</label>
+        <label class="check"><input type="checkbox" id="setTeam"> Team mode: mixed requests go to several specialists, JARVIS combines their answers</label>
+      </div>
+
+      <div class="card stack">
+        <h2>Voice</h2>
+        <p class="muted small" id="voiceSupport"></p>
+        <label>Accent / language<select id="setLang">
+          <option value="en-GB">English (UK)</option>
+          <option value="en-ZA">English (South Africa)</option>
+          <option value="en-US">English (US)</option>
+          <option value="en-AU">English (Australia)</option>
+          <option value="af-ZA">Afrikaans</option>
+        </select></label>
+        <label>Voice<select id="setVoice"><option value="">Automatic (feminine, British)</option></select></label>
+        <label>Speed <output id="rateOut"></output><input id="setRate" type="range" min="0.6" max="1.6" step="0.05"></label>
+        <label>Pitch <output id="pitchOut"></output><input id="setPitch" type="range" min="0.5" max="1.8" step="0.05"></label>
+        <label>Volume <output id="volOut"></output><input id="setVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label class="check"><input id="setAutoSpeak" type="checkbox"> Read every reply aloud</label>
+        <label class="check"><input id="setHandsFree" type="checkbox"> Conversation mode: listen again after each spoken reply</label>
+        <button class="btn" type="button" id="testVoice">Test voice</button>
+      </div>
+
+      <div class="card stack">
+        <h2>Privacy</h2>
+        <p class="muted small">Memory, projects, chats and your API key are saved only in this browser on this phone. Each message you send goes to the brain you chose above. Voice input is processed by your phone's speech service (on most Android phones that is Google). Messages that contain something that looks like a password or key are cleaned before they leave the phone.</p>
+        <div class="row wrap">
+          <button class="btn" type="button" id="exportData">Export backup</button>
+          <label class="btn file-btn">Import backup<input id="importData" type="file" accept="application/json" hidden></label>
+          <button class="btn danger" type="button" id="wipeData">Delete everything</button>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <h2>About</h2>
+        <p class="muted small" id="aboutText"></p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Sections">
+    <a href="#home" data-tab="home"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3z"/></svg><span>Home</span></a>
+    <a href="#agents" data-tab="agents"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5C15 14.2 10.3 13 8 13zm8 0h-1.1A4.2 4.2 0 0 1 17 16.5V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></svg><span>Agents</span></a>
+    <a href="#memory" data-tab="memory"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2zM9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg><span>Memory</span></a>
+    <a href="#projects" data-tab="projects"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8z"/></svg><span>Projects</span></a>
+    <a href="#more" data-tab="more"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg><span>More</span></a>
+  </nav>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
